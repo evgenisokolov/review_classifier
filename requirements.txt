@@ -1,0 +1,5 @@
+pandas
+bs4
+nltk
+numpy
+sentence_transformers
