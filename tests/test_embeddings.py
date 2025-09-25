@@ -1,11 +1,11 @@
 import numpy as np
 import pandas as pd
 import pytest
-from src.features.embeddings import get_embedding, generate_embeddings, _get_model
+from src.features.embeddings import get_embedding, generate_embeddings, get_model
 
 def test_get_model_singleton():
-    m1 = _get_model()
-    m2 = _get_model()
+    m1 = get_model()
+    m2 = get_model()
     assert m1 is m2  # singleton pattern works
 
 def test_get_embedding_shape():

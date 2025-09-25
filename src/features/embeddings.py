@@ -7,7 +7,7 @@ from sentence_transformers import SentenceTransformer
 _model_instance: SentenceTransformer = None
 
 
-def _get_model(model_name: str = "all-MiniLM-L6-v2") -> SentenceTransformer:
+def get_model(model_name: str = "all-MiniLM-L6-v2") -> SentenceTransformer:
     """
     Returns a singleton SentenceTransformer model instance.
     Loads the model once and reuses it.
@@ -22,7 +22,7 @@ def get_embedding(text: str, model_name: str = "all-MiniLM-L6-v2") -> np.ndarray
     """
     Generate embedding for a single sentence or text.
     """
-    model = _get_model(model_name)
+    model = get_model(model_name)
     embedding = model.encode([text], show_progress_bar=False)
     return embedding[0]
 
@@ -39,7 +39,7 @@ def generate_embeddings(
     as a new column f'{text_col}_embedding'.
     Returns the modified DataFrame.
     """
-    model = _get_model(model_name)
+    model = get_model(model_name)
     texts: List[str] = df[text_col].tolist()
     embeddings = model.encode(
         texts, batch_size=batch_size, show_progress_bar=show_progress_bar

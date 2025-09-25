@@ -4,10 +4,9 @@ from xgboost import XGBClassifier
 from sklearn.metrics import classification_report, accuracy_score
 import joblib
 from src.features.embeddings import generate_embeddings
-import logging
+from src.utils.logger import init_logger
 
-logger = logging.getLogger("review_classifier")
-logger.setLevel(logging.INFO)
+logger = init_logger(name="review_classifier_train")
 
 def _map_rating_to_class(rating: float) -> int:
     if rating <= 2:

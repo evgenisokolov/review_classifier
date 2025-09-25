@@ -4,3 +4,7 @@ nltk
 numpy
 sentence_transformers
 xgboost
+python-json-logger
+prometheus-client
+fastapi
+httpx
