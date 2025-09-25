@@ -17,7 +17,6 @@ def _endpoint_label(request: Request) -> str:
     return request.url.path or request.scope.get("path", "/unknown")
 
 def create_logging_middleware(logger, registry=REGISTRY):
-    # IMPORTANT: Define metrics inside the function to use the passed registry
     REQUEST_COUNT = Counter(
         "http_requests_total",
         "Total HTTP requests",
@@ -40,7 +39,6 @@ def create_logging_middleware(logger, registry=REGISTRY):
         endpoint = _endpoint_label(request)
         status_code = response.status_code
 
-        # The labels will now be applied to the correct metrics
         REQUEST_COUNT.labels(
             method=method,
             endpoint=endpoint,
