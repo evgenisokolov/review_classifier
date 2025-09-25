@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+from xgboost import XGBClassifier
+import json
 
 from src.model import train
 from src.features.embeddings import get_embedding
@@ -23,13 +25,13 @@ def test_map_rating_to_class():
 
 def test_train_model_returns_xgbclassifier():
     df = make_tiny_df()
-    model = train.train_model(df, text_col="text")
+    model = train._train_model(df, text_col="text")
     from xgboost import XGBClassifier
     assert isinstance(model, XGBClassifier)
 
 def test_model_predicts_probability_shape():
     df = make_tiny_df()
-    model = train.train_model(df, text_col="text")
+    model = train._train_model(df, text_col="text")
     # new input embedding
     emb = get_embedding("This is wonderful!")
     emb = emb.reshape(1, -1)
@@ -40,10 +42,10 @@ def test_model_predicts_probability_shape():
 
 def test_save_and_load_model_roundtrip(tmp_path):
     df = make_tiny_df()
-    model = train.train_model(df, text_col="text")
+    model = train._train_model(df, text_col="text")
 
     model_path = tmp_path / "xgb_model.joblib"
-    train.save_model(model, model_path)
+    train._save_model(model, model_path)
     assert model_path.exists()
 
     loaded_model = train.load_model(model_path)
@@ -51,4 +53,56 @@ def test_save_and_load_model_roundtrip(tmp_path):
     emb = get_embedding("Horrible!")
     emb = emb.reshape(1, -1)
     pred = loaded_model.predict(emb)
+    assert pred.shape == (1,)
+
+
+def test_evaluate_model_returns_metrics():
+    df = make_tiny_df()
+    model = train._train_model(df, text_col="text")
+
+    metrics = train._evaluate_model(model, df, text_col="text")
+    assert isinstance(metrics, dict)
+    assert "accuracy" in metrics
+    assert "classification_report" in metrics
+    assert 0 <= metrics["accuracy"] <= 1
+
+def test_run_training_pipeline_creates_files(tmp_path):
+    # create a dummy JSONL file for pipeline
+    jsonl = tmp_path / "reviews.jsonl"
+    # each line is a JSON object
+    lines = [
+        '{"rating":5,"text":"This is great. Love it!"}',
+        '{"rating":5,"text":"Fantastic product"}',
+        '{"rating":3,"text":"It is fine."}',
+        '{"rating":3,"text":"Okay"}',
+        '{"rating":1,"text":"Bad product."}',
+        '{"rating":1,"text":"Awful"}'
+    ]
+    jsonl.write_text("\n".join(lines), encoding="utf-8")
+
+    model_path = tmp_path / "xgb_model.joblib"
+    metrics_path = tmp_path / "metrics.json"
+
+    # run pipeline
+    train.run_training_pipeline(
+        data_path=jsonl,
+        model_path=model_path,
+        metrics_path=metrics_path,
+        test_size=0.33,  # small eval split
+    )
+
+    # assert model and metrics files created
+    assert model_path.exists()
+    assert metrics_path.exists()
+
+    # load and inspect metrics
+    metrics = json.loads(metrics_path.read_text())
+    assert "accuracy" in metrics
+    assert "classification_report" in metrics
+
+    # load and check model works
+    model = train.load_model(model_path)
+    assert isinstance(model, XGBClassifier)
+    emb = get_embedding("Wonderful product").reshape(1, -1)
+    pred = model.predict(emb)
     assert pred.shape == (1,)
