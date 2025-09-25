@@ -1,0 +1,12 @@
+xgboost
+pandas
+scikit-learn
+sentence-transformers
+nltk
+python-json-logger
+prometheus-client
+fastapi
+uvicorn[standard]
+bs4
+numpy
+httpx
