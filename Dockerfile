@@ -21,6 +21,7 @@ ENV DATA_PATH=${DATA_PATH}
 COPY data ./data
 
 # run training pipeline (writes to /app/models)
+RUN mkdir -p /app/models
 RUN python -m src.model.train \
     --data-path ${DATA_PATH} \
     --model-path /app/models/xgb_sentiment.joblib \

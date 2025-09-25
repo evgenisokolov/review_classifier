@@ -7,3 +7,6 @@ python-json-logger
 prometheus-client
 fastapi
 uvicorn[standard]
+bs4
+numpy
+httpx

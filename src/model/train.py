@@ -84,3 +84,23 @@ def run_training_pipeline(
     logger.info("Pipeline complete",
                 extra={"model_path": model_path, "metrics_path": metrics_path,
                        "accuracy": metrics["accuracy"]})
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Train sentiment classifier")
+    parser.add_argument("--data-path", required=True, help="Path to input JSONL reviews file")
+    parser.add_argument("--text-col", default="text", help="Column name containing review text")
+    parser.add_argument("--test-size", type=float, default=0.2, help="Evaluation split size")
+    parser.add_argument("--model-path", default="models/xgb_sentiment.joblib", help="Where to save trained model")
+    parser.add_argument("--metrics-path", default="models/metrics.json", help="Where to save metrics JSON")
+
+    args = parser.parse_args()
+
+    run_training_pipeline(
+        data_path=args.data_path,
+        text_col=args.text_col,
+        test_size=args.test_size,
+        model_path=args.model_path,
+        metrics_path=args.metrics_path
+    )

@@ -15,29 +15,28 @@ It covers:
 
 ## File Map
 
+```text
 review_classifier/
 ├─ src/
-│ ├─ data/
-│ │ ├─ dataset.py # load & preprocess reviews
-│ ├─ features/
-│ │ ├─ embeddings.py # embedding model + functions
-│ ├─ model/
-│ │ ├─ train.py # training, evaluation, pipeline runner
-│ ├─ serving/
-│ │ ├─ app.py # FastAPI app
-│ │ ├─ middleware.py # logging + metrics middleware
-│ ├─ utils/
-│ │ ├─ logger.py # init_logger() helper
-│ └─ init.py
-├─ models/ # trained model + metrics.json
-├─ data/ # input datasets (.jsonl)
-├─ tests/ # pytest unit tests
-├─ requirements-train.txt # all dependencies including training
-├─ requirements-serve.txt # minimal dependencies for serving
-├─ Dockerfile # multi-stage build (train then serve)
-└─ README.md # this file
-
-
+│  ├─ data/
+│  │  └─ dataset.py          # load & preprocess reviews
+│  ├─ features/
+│  │  └─ embeddings.py       # embedding model + functions
+│  ├─ model/
+│  │  └─ train.py            # training, evaluation, pipeline runner
+│  ├─ serving/
+│  │  ├─ app.py              # FastAPI app
+│  │  ├─ middleware.py       # logging + metrics middleware
+│  ├─ utils/
+│  │  └─ logger.py           # init_logger() helper
+├─ models/                   # trained model + metrics.json
+├─ data/                     # input datasets (.jsonl)
+├─ tests/                    # pytest unit tests
+├─ requirements-train.txt    # all dependencies including training
+├─ requirements-serve.txt    # minimal dependencies for serving
+├─ Dockerfile                # multi-stage build (train then serve)
+└─ README.md                 # this file
+```
 ---
 
 ## Local Development
